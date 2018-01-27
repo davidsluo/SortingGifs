@@ -168,18 +168,47 @@ class HeapSort(SortingAlgorithm):
 
 
 if __name__ == '__main__':
-    colors = list(range(0, 360))
-    random.shuffle(colors)
-    sort = HeapSort()
-    sort.sort(colors)
+    # color_grid = (range(0, 360, 6) for _ in range(0, 360, 6))
+    color_grid = (range(0, 256, 4) for _ in range(0, 256, 4))
+    steps = []
+    for row in color_grid:
+        line = list(row)
+        random.shuffle(line)
+        sort = MergeSort()
+        sort.sort(line)
+        steps.append(sort.steps)
 
-    image = Image.new('HSV', (len(sort.steps), len(colors)))
-    draw_ctx = ImageDraw.Draw(image)
+    hue_grid = []
 
-    for x, step in enumerate(sort.steps):
-        print(x, step)
-        for y, color in enumerate(step):
-            draw_ctx.point((x, y), (int((color / 360) * 256), 255, 255))
+    for i in range(len(max(steps, key=len))):
+        hue_grid.append([
+            line[i if i < len(line) else len(line) - 1] for line in steps
+        ])
 
-    image.convert('RGB').save('image.bmp')
+    frames = []
+
+    size = len(hue_grid[0]), len(hue_grid[0])
+    gif = Image.new('RGB', size)
+    for frame in hue_grid:
+        image = Image.new('HSV', size)
+        draw_ctx = ImageDraw.Draw(image)
+
+        for x, row in enumerate(frame):
+            for y, hue in enumerate(row):
+                # draw_ctx.point((x, y), (int((hue / 360) * 256), 255, 255))
+                draw_ctx.point((x, y), (hue, 255, 255))
+
+        frames.append(image.convert('RGB'))
+
+    gif.save('image.gif', save_all=True, append_images=frames, duration=100, loop=100)
+
+    # image = Image.new('HSV', (len(sort.steps), len(color_grid)))
+    # draw_ctx = ImageDraw.Draw(image)
+    #
+    # for x, step in enumerate(sort.steps):
+    #     print(x, step)
+    #     for y, color in enumerate(step):
+    #         draw_ctx.point((x, y), (int((color / 360) * 256), 255, 255))
+    #
+    # image.convert('RGB').save('image.bmp')
     # image.show()

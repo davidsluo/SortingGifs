@@ -1,7 +1,7 @@
 import random
 from abc import ABC, abstractmethod
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImagePalette
 
 
 class SortingAlgorithm(ABC):
@@ -187,10 +187,16 @@ if __name__ == '__main__':
 
     frames = []
 
-    size = len(hue_grid[0]), len(hue_grid[0])
-    gif = Image.new('RGB', size)
+    scale = 8
+
+    length, width = len(hue_grid[0]), len(hue_grid[0])
+    gif = Image.new('P', (length * scale, width * scale))
+
+    # for hue in range(0, 256, 4):
+    #     gif.putpalette()
+
     for frame in hue_grid:
-        image = Image.new('HSV', size)
+        image = Image.new('HSV', (length, width))
         draw_ctx = ImageDraw.Draw(image)
 
         for x, row in enumerate(frame):
@@ -198,7 +204,7 @@ if __name__ == '__main__':
                 # draw_ctx.point((x, y), (int((hue / 360) * 256), 255, 255))
                 draw_ctx.point((x, y), (hue, 255, 255))
 
-        frames.append(image.convert('RGB'))
+        frames.append(image.convert('P').resize((length * scale, width * scale), resample=Image.NEAREST))
 
     gif.save('image.gif', save_all=True, append_images=frames, duration=100, loop=100)
 

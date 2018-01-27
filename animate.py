@@ -169,7 +169,8 @@ class HeapSort(SortingAlgorithm):
 
 if __name__ == '__main__':
     # color_grid = (range(0, 360, 6) for _ in range(0, 360, 6))
-    color_grid = (range(0, 256, 4) for _ in range(0, 256, 4))
+    divisor = 1
+    color_grid = (range(0, 256, divisor) for _ in range(0, 256, divisor))
     steps = []
     for row in color_grid:
         line = list(row)
